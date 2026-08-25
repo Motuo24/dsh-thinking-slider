@@ -46,23 +46,38 @@ The data flow reuses the original per-session `ModelDirectory` (the `modelDirect
 Copy the prompt below and paste it to any DSH agent session (e.g. the `cordis` preset). The agent will clone the plugin, place it in the right profile directory, patch the composition, and tell you when to restart.
 
 ````markdown
-请帮我安装 DSH 客户端插件「thinking-slider」（https://github.com/Motuo24/dsh-thinking-slider），
-它把模型选择菜单里的思考强度（推理等级）从按钮列表替换为带档位吸附的滑条。
+Please install the DSH client plugin "thinking-slider" for me
+(https://github.com/Motuo24/dsh-thinking-slider). It replaces the reasoning-effort
+(thinking strength) button list in the model picker with a snap-to-step slider.
 
-安装步骤：
-1. 探测 DSH_HOME（环境变量 DSH_HOME，缺省为 ~/.dsh / %USERPROFILE%\.dsh）。
-2. 把仓库克隆到 <DSH_HOME>\profiles\node_modules\thinking-slider（git clone
-   https://github.com/Motuo24/dsh-thinking-slider.git thinking-slider）；
-   若该目录已存在，改为拉取最新（git pull）。
-3. 检查 <DSH_HOME>\profiles\web\cordis.patch.yml：如果还没有 thinking-slider 插件行，
-   在顶层数组末尾追加：
+Install steps:
+1. Inspect the environment:
+   - Read DSH_HOME (env var DSH_HOME, default ~/.dsh or %USERPROFILE%\.dsh) and confirm
+     <DSH_HOME>\profiles\web\cordis.patch.yml and <DSH_HOME>\profiles\node_modules exist.
+   - If git cannot reach GitHub (e.g. "Connection was reset"), configure a local git proxy
+     first, e.g. `git config --global http.proxy http://127.0.0.1:7897` and the same for
+     https.proxy (use the port of the actual local proxy software).
+2. Obtain the source: prefer cloning the repo into my current workspace (a directory I allow
+   you to write), then copy the whole thinking-slider directory to
+   <DSH_HOME>\profiles\node_modules\thinking-slider; cloning directly to the target also
+   works (remove the .git directory inside afterwards). If the target already exists,
+   overwrite it with the latest code.
+   Note: writing under <DSH_HOME> is a deployment-config change — if the file sandbox denies
+   access, request extended file permissions; that is expected, not an error.
+3. Edit <DSH_HOME>\profiles\web\cordis.patch.yml: if it does not yet contain a
+   thinking-slider plugin row, append at the end of the top-level array (keep any existing
+   content):
    ```yaml
    - insert:
        - id: thinking-slider
          name: thinking-slider
    ```
-4. 校验 package.json 存在且 exports["./client"] 指向 lib/client.js。
-5. 完成后提醒我重启 DSH 进程，重启后打开 Web 界面的模型选择器 →「思考强度」验证滑条。
+4. Verify <DSH_HOME>\profiles\node_modules\thinking-slider\package.json exists, its
+   exports["./client"] points to lib/client.js, and both lib/client.js and lib/index.js are
+   present.
+5. Do NOT try to restart the host DSH process yourself (it would interrupt this session).
+   When done, remind me to restart DSH; after the restart I will open the model picker →
+   "Thinking strength" in the web UI to verify the slider appears.
 ````
 
 ### Option B — manual install

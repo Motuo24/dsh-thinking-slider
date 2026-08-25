@@ -50,19 +50,28 @@
 它把模型选择菜单里的思考强度（推理等级）从按钮列表替换为带档位吸附的滑条。
 
 安装步骤：
-1. 探测 DSH_HOME（环境变量 DSH_HOME，缺省为 ~/.dsh / %USERPROFILE%\.dsh）。
-2. 把仓库克隆到 <DSH_HOME>\profiles\node_modules\thinking-slider（git clone
-   https://github.com/Motuo24/dsh-thinking-slider.git thinking-slider）；
-   若该目录已存在，改为拉取最新（git pull）。
-3. 检查 <DSH_HOME>\profiles\web\cordis.patch.yml：如果还没有 thinking-slider 插件行，
-   在顶层数组末尾追加：
+1. 确认环境：
+   - 读取 DSH_HOME（环境变量 DSH_HOME，缺省 ~/.dsh 或 %USERPROFILE%\.dsh），确认
+     <DSH_HOME>\profiles\web\cordis.patch.yml 与 <DSH_HOME>\profiles\node_modules 存在。
+   - 若 git 访问 GitHub 失败（如 Connection was reset），先为本机配置 git 代理再继续，
+     例如 git config --global http.proxy http://127.0.0.1:7897 与 https.proxy 同理
+     （端口以本机实际代理软件为准）。
+2. 获取插件源码：优先把仓库克隆到当前工作区（我允许写入的目录），随后将整个
+   thinking-slider 目录复制到 <DSH_HOME>\profiles\node_modules\thinking-slider；
+   也可以直接克隆到目标位置（克隆后删除其中的 .git 目录）。若目标目录已存在，用最新代码覆盖。
+   注意：写入 <DSH_HOME> 属于部署配置修改，若文件沙箱拒绝访问，请申请扩展文件权限——
+   这是预期内的，不是错误。
+3. 编辑 <DSH_HOME>\profiles\web\cordis.patch.yml：若其中还没有 thinking-slider 插件行，
+   在顶层数组末尾追加（保留文件里已有的其他内容）：
    ```yaml
    - insert:
        - id: thinking-slider
          name: thinking-slider
    ```
-4. 校验 package.json 存在且 exports["./client"] 指向 lib/client.js。
-5. 完成后提醒我重启 DSH 进程，重启后打开 Web 界面的模型选择器 →「思考强度」验证滑条。
+4. 校验 <DSH_HOME>\profiles\node_modules\thinking-slider\package.json 存在，
+   且其 exports["./client"] 指向 lib/client.js，lib/client.js 与 lib/index.js 均在。
+5. 不要尝试自行重启宿主 DSH 进程（会中断当前会话）。完成后提醒我重启 DSH 进程；
+   重启后我打开 Web 界面的模型选择器 →「思考强度」验证滑条是否出现。
 ````
 
 ### 方式二：手动安装
