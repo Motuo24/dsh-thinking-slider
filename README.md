@@ -41,6 +41,32 @@ The data flow reuses the original per-session `ModelDirectory` (the `modelDirect
 
 > Requires the DSH web environment (`@deepseek-ai/dsh-web-app` and `dsh-client-ui-model-selection` mounted).
 
+### Option A — let your DSH agent install it for you (recommended)
+
+Copy the prompt below and paste it to any DSH agent session (e.g. the `cordis` preset). The agent will clone the plugin, place it in the right profile directory, patch the composition, and tell you when to restart.
+
+````markdown
+请帮我安装 DSH 客户端插件「thinking-slider」（https://github.com/Motuo24/dsh-thinking-slider），
+它把模型选择菜单里的思考强度（推理等级）从按钮列表替换为带档位吸附的滑条。
+
+安装步骤：
+1. 探测 DSH_HOME（环境变量 DSH_HOME，缺省为 ~/.dsh / %USERPROFILE%\.dsh）。
+2. 把仓库克隆到 <DSH_HOME>\profiles\node_modules\thinking-slider（git clone
+   https://github.com/Motuo24/dsh-thinking-slider.git thinking-slider）；
+   若该目录已存在，改为拉取最新（git pull）。
+3. 检查 <DSH_HOME>\profiles\web\cordis.patch.yml：如果还没有 thinking-slider 插件行，
+   在顶层数组末尾追加：
+   ```yaml
+   - insert:
+       - id: thinking-slider
+         name: thinking-slider
+   ```
+4. 校验 package.json 存在且 exports["./client"] 指向 lib/client.js。
+5. 完成后提醒我重启 DSH 进程，重启后打开 Web 界面的模型选择器 →「思考强度」验证滑条。
+````
+
+### Option B — manual install
+
 1. Clone this repository and put the `thinking-slider` directory into the DSH profile's node_modules (hoisted layout):
 
    ```bash
