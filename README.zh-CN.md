@@ -37,6 +37,20 @@
 
 数据流复用原版的 per-session `ModelDirectory`（`modelDirectories` 服务）：加载模型目录 → `directory.store` 订阅 → `directory.select({provider, model, reasoningEffort})` 提交。
 
+## 效果图
+
+### 更多思考强度档位 —— MiniMax M2.7
+
+DSH 接入 MiniMax M2.7 时，插件会适配模型暴露的推理档位目录，扩展到更多的思考强度等级，并统一落在一条带档位吸附的滑条上。
+
+![MiniMax M2.7 —— 更多思考强度档位](docs/images/minimax-m27-more-levels.png)
+
+### 叠加到 DeepSeek
+
+同一条滑条叠加在 DeepSeek 模型上，在 `Off` / `Low` / `High` / `Max` 之间干净吸附。
+
+![DeepSeek —— 思考强度滑条](docs/images/deepseek-overlay.jpg)
+
 ## 安装
 
 > 需要 DSH Web 环境（`@deepseek-ai/dsh-web-app` 及 `dsh-client-ui-model-selection` 已挂载）。

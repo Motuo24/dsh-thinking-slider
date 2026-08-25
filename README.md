@@ -37,6 +37,20 @@ The plugin shadows the `conversation.input.model` seat via **shadow registration
 
 The data flow reuses the original per-session `ModelDirectory` (the `modelDirectories` service): load the model catalog → subscribe to `directory.store` → commit via `directory.select({provider, model, reasoningEffort})`.
 
+## Screenshots
+
+### More reasoning levels — MiniMax M2.7
+
+When DSH is connected to MiniMax M2.7, the plugin adapts to the model's exposed reasoning catalog and expands to more thinking-strength levels, keeping them on a single snap-to-step slider.
+
+![MiniMax M2.7 — more thinking-strength levels](docs/images/minimax-m27-more-levels.png)
+
+### Layered on DeepSeek
+
+The same slider layered on a DeepSeek model, snapping cleanly between `Off` / `Low` / `High` / `Max`.
+
+![DeepSeek — thinking-strength slider](docs/images/deepseek-overlay.jpg)
+
 ## Install
 
 > Requires the DSH web environment (`@deepseek-ai/dsh-web-app` and `dsh-client-ui-model-selection` mounted).
