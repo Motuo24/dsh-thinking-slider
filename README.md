@@ -1,10 +1,10 @@
 # thinking-slider
 
-[English](./README.md) | [中文](./README.zh-CN.md)
+[English](./README_EN.md) | [中文](./README.md)
 
 <div align="center">
 
-**A snap-to-step slider for the "thinking strength" (reasoning effort) control in the DSH web UI.**
+**把 DSH Web 界面模型选择器里的「思考强度」（推理等级）调节，换成一条带档位吸附的滑条。**
 
 <br/>
 
@@ -14,128 +14,122 @@
 <a href="https://github.com/Motuo24/dsh-thinking-slider"><img alt="Repo size" src="https://img.shields.io/github/repo-size/Motuo24/dsh-thinking-slider" /></a>
 <a href="https://github.com/topics/dsh-plugin"><img alt="DSH plugin" src="https://img.shields.io/badge/插件生态-topic%20dsh--plugin-4d6bfe" /></a>
 
-**Turn the model picker's discrete effort buttons into a smooth, springy slider.**
+**让模型的思考强度调节，像音量一样顺滑自然。**
 
 </div>
 
-## 📑 Table of Contents
+## 📑 目录
 
-- [✨ Introduction](#-introduction)
-- [🎯 Features](#-features)
-- [🖼️ Screenshots](#️-screenshots)
-- [🔧 How it works](#-how-it-works)
-- [🚀 Installation](#-installation)
-- [🔄 Update](#-update)
-- [❓ FAQ](#-faq)
-- [🧩 Compatibility](#-compatibility)
-- [🛠️ Development](#️-development)
-- [📋 Changelog](#-changelog)
-- [⚠️ Known limitations](#️-known-limitations)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
+- [✨ 项目介绍](#-项目介绍)
+- [🎯 特性](#-特性)
+- [🖼️ 效果图](#️-效果图)
+- [🔧 工作原理](#-工作原理)
+- [🚀 安装](#-安装)
+- [🔄 更新](#-更新)
+- [❓ 常见问题](#-常见问题)
+- [🧩 兼容性](#-兼容性)
+- [🛠️ 开发与构建](#️-开发与构建)
+- [📋 更新日志](#-更新日志)
+- [⚠️ 已知限制](#️-已知限制)
+- [🤝 参与贡献](#-参与贡献)
+- [📄 许可](#-许可)
 
-## ✨ Introduction
+## ✨ 项目介绍
 
-When using the DSH web UI, adjusting how "deeply" a model thinks — its thinking strength (reasoning effort) — hides behind a second-level menu in the model picker as a row of discrete buttons: `Default` / `Off` / `High` / `Max`. Clicking is straightforward, but for a concept that is inherently a continuous gradient, a button list is neither intuitive nor pleasant to operate.
+在使用 DSH Web 界面时，如果想调整模型"想多深"——也就是思考强度（推理等级），原版的入口藏在模型选择器的二级菜单里，是一排离散的按钮：`Default` / `Off` / `High` / `Max`。点选固然直接，但对"强度"这种本身是连续渐变的概念，按钮列表既不直观，也缺乏调节手感。
 
-**thinking-slider** exists exactly for this: it replaces that row of buttons with a **snap-to-step slider**, making thinking-strength adjustment as smooth and natural as a volume control.
+**thinking-slider** 正是为此而生：它把这一排按钮替换为一条**带档位吸附的滑条**，让思考强度的调节像音量一样顺滑自然。
 
-- **More intuitive** — drag continuously; release to snap to the nearest step center with a springy settle animation. Every level "lands firmly and reads clearly".
-- **More restrained** — only the "thinking strength" panel is replaced; model switching, the Default level, error retry, and the session lock state all behave exactly as the original.
-- **Non-invasive** — it shadows the original seat (priority `-1`); stop or remove the plugin and the original button-list UI returns instantly, with nothing left behind.
-- **User-aware** — the explanation text follows the DSH UI language (zh/en); after commit the host remains the single source of truth, so the UI always reflects the real selection.
+- **更直观**：连续拖动，松手自动吸附到最近的档位中心，配弹性落档动画——每个档位都"停得稳、看得清"
+- **更克制**：只替换「思考强度」面板，模型切换列表、Default 档、错误重试、会话锁定态等原版行为全部保留，不改变既有工作流
+- **更无侵入**：通过影子注册（priority `-1`）替换原版席位，停止/删除插件即刻恢复原版界面，不留任何残余
+- **更懂用户**：功能说明随界面中英文切换；提交后宿主为唯一事实源，界面状态始终与真实选择一致
 
-It is not a standalone app — it is a lightweight DSH client plugin of 3 files and a few hundred lines: the host half merely marks the Loader row, while the browser half carries the entire UI and interaction, wired into DSH's plugin system through the `dsh.client` declaration and auto-loaded at process start.
+它不是一个独立应用，而是一个 3 个文件、几百行代码的轻量 DSH 客户端插件：host 半仅作为 Loader 识别标记，浏览器半承载全部 UI 与交互，通过 `dsh.client` 声明接入 DSH 的插件体系，随进程启动自动加载。
 
-## 🎯 Features
+## 🎯 特性
 
-- **Slider-based thinking strength** — open the model picker → "Thinking strength" and pick between `Default` / `Off` / `High` / `Max` (whatever levels the model actually provides)
-- **Snap-to-step** — drag continuously; on release the thumb snaps to the nearest step center with a springy settle animation
-- **Auto-hides redundant Default** — when a model exposes 5+ concrete reasoning levels, the "Default" placeholder is dropped so the slider stays uncluttered
-- **Visual feedback** — capsule track, blue progress fill, middle-level dots (first/last hidden under the thumb), white round thumb
-- **Explanatory copy** — under the title: "Higher strength produces more detailed reasoning but costs more time and resources"
-- **Bilingual** — copy follows the DSH UI language
-- **Commits immediately** — the snapped level is submitted via `session.selectModel`; the host is the single source of truth
-- **Keeps original behavior** — model list switching, Default level, error retry, and session lock state match the original
+- **滑条调节思考强度**：进入模型选择器 →「思考强度」，用滑条在 `Default` / `Off` / `High` / `Max`（按模型实际提供的档位）之间选择
+- **档位吸附**：连续拖动，松手自动吸附到最近的档位中心，并带弹性落档动画
+- **自动屏蔽冗余 Default**：当模型暴露 5 个及以上具体档位时，自动去掉 "Default" 占位项，滑条保持清爽
+- **视觉反馈**：胶囊轨道、蓝色进度填充、中间档位圆点（首末档被滑块遮挡）、白色圆滑块
+- **说明文案**：标题下方提示「调高强度可获得更详细的推理过程，但会消耗更多时间与资源」
+- **中英文双语**：文案随 DSH 界面语言切换
+- **提交即生效**：吸附后的档位通过 `session.selectModel` 真实提交，宿主为唯一事实源
+- **不中断原功能**：模型切换列表、Default 档、错误重试、会话锁定态等行为与原版一致
 
-## 🖼️ Screenshots
+## 🖼️ 效果图
 
-### More reasoning levels with third-party providers — e.g. MiniMax M2.7
+### 接入第三方提供商时开放更多档位 —— 以 MiniMax M2.7 为例
 
-When DSH is connected to a third-party provider such as MiniMax M2.7, the provider exposes a richer reasoning catalog and the plugin adapts automatically, expanding the slider to all the extra thinking-strength levels the model offers — on the same snap-to-step control.
+DSH 接入 MiniMax 等第三方提供商时，提供商会暴露更丰富的推理档位目录，插件自动适配，把模型开放的所有思考强度等级都展开在同一条带档位吸附的滑条上。
 
-![MiniMax M2.7 — more thinking-strength levels](docs/images/minimax-m27-more-levels-v2.png)
+![MiniMax M2.7 —— 更多思考强度档位](docs/images/minimax-m27-more-levels-v2.png)
 
-### Layered on DeepSeek
+### 叠加到 DeepSeek
 
-The same slider layered on a DeepSeek model, snapping cleanly between `Off` / `Low` / `High` / `Max`.
+同一条滑条叠加在 DeepSeek 模型上，在 `Off` / `Low` / `High` / `Max` 之间干净吸附。
 
-![DeepSeek — thinking-strength slider](docs/images/deepseek-overlay.png)
+![DeepSeek —— 思考强度滑条](docs/images/deepseek-overlay.png)
 
-## 🔧 How it works
+## 🔧 工作原理
 
-The plugin shadows the `conversation.input.model` seat via **shadow registration** (priority `-1` < original `0`; the lowest renders):
+插件通过 **影子注册**（priority `-1` < 原版 `0`，最低者渲染）替换 `conversation.input.model` 席位：
 
-- The original (`@deepseek-ai/dsh-client-ui-model-selection`) registers at priority `0` and renders the two-level "Model / Reasoning effort" menu
-- This plugin registers at priority `-1` and renders the two-level "Model / Thinking strength" menu, whose strength panel is a slider
-- Stop or remove the plugin and the original button-list UI returns immediately
+- 原版（`@deepseek-ai/dsh-client-ui-model-selection`）以 priority `0` 注册，渲染「模型 / 推理等级」两级菜单
+- 本插件以 priority `-1` 注册，渲染「模型 / 思考强度」两级菜单，其中强度面板为滑条
+- 停止/删除插件后，原版按钮列表界面立即恢复
 
-The data flow reuses the original per-session `ModelDirectory` (the `modelDirectories` service): load the model catalog → subscribe to `directory.store` → commit via `directory.select({provider, model, reasoningEffort})`.
+数据流复用原版的 per-session `ModelDirectory`（`modelDirectories` 服务）：加载模型目录 → `directory.store` 订阅 → `directory.select({provider, model, reasoningEffort})` 提交。
 
-## 🚀 Installation
+## 🚀 安装
 
-> Requires the DSH web environment (`@deepseek-ai/dsh-web-app` and `dsh-client-ui-model-selection` mounted).
+> 需要 DSH Web 环境（`@deepseek-ai/dsh-web-app` 及 `dsh-client-ui-model-selection` 已挂载）。
 
-### Option A — let your DSH agent install it for you (recommended)
+### 方式一：让 DSH Agent 自动安装（推荐）
 
-Copy the prompt below and paste it to any DSH agent session (e.g. the `cordis` preset). The agent will clone the plugin, place it in the right profile directory, patch the composition, and tell you when to restart.
+复制下面的提示词，粘贴给任意 DSH Agent 会话（例如 `cordis` 预设）。Agent 会克隆插件、放到正确的 profile 目录、改好组合，并告诉你何时重启。
 
 ````markdown
-Please install the DSH client plugin "thinking-slider" for me
-(https://github.com/Motuo24/dsh-thinking-slider). It replaces the reasoning-effort
-(thinking strength) button list in the model picker with a snap-to-step slider.
+请帮我安装 DSH 客户端插件「thinking-slider」（https://github.com/Motuo24/dsh-thinking-slider），
+它把模型选择菜单里的思考强度（推理等级）从按钮列表替换为带档位吸附的滑条。
 
-Install steps:
-1. Inspect the environment:
-   - Read DSH_HOME (env var DSH_HOME, default ~/.dsh or %USERPROFILE%\.dsh) and confirm
-     <DSH_HOME>\profiles\web\cordis.patch.yml and <DSH_HOME>\profiles\node_modules exist.
-   - If git cannot reach GitHub (e.g. "Connection was reset"), find a usable mirror or
-     another way to obtain the source yourself; do not assume a local proxy exists.
-2. Obtain the source: prefer cloning the repo into my current workspace (a directory I allow
-   you to write), then copy the whole thinking-slider directory to
-   <DSH_HOME>\profiles\node_modules\thinking-slider; cloning directly to the target also
-   works (remove the .git directory inside afterwards). If the target already exists,
-   overwrite it with the latest code.
-   Note: writing under <DSH_HOME> is a deployment-config change — if the file sandbox denies
-   access, request extended file permissions; that is expected, not an error.
-3. Edit <DSH_HOME>\profiles\web\cordis.patch.yml: if it does not yet contain a
-   thinking-slider plugin row, append at the end of the top-level array (keep any existing
-   content):
+安装步骤：
+1. 确认环境：
+   - 读取 DSH_HOME（环境变量 DSH_HOME，缺省 ~/.dsh 或 %USERPROFILE%\.dsh），确认
+     <DSH_HOME>\profiles\web\cordis.patch.yml 与 <DSH_HOME>\profiles\node_modules 存在。
+   - 若 git 访问 GitHub 失败（如 Connection was reset），由你自行寻找可用的镜像地址或
+     其他方式获取源码，不要假定本机存在本地代理。
+2. 获取插件源码：优先把仓库克隆到当前工作区（我允许写入的目录），随后将整个
+   thinking-slider 目录复制到 <DSH_HOME>\profiles\node_modules\thinking-slider；
+   也可以直接克隆到目标位置（克隆后删除其中的 .git 目录）。若目标目录已存在，用最新代码覆盖。
+   注意：写入 <DSH_HOME> 属于部署配置修改，若文件沙箱拒绝访问，请申请扩展文件权限——
+   这是预期内的，不是错误。
+3. 编辑 <DSH_HOME>\profiles\web\cordis.patch.yml：若其中还没有 thinking-slider 插件行，
+   在顶层数组末尾追加（保留文件里已有的其他内容）：
    ```yaml
    - insert:
        - id: thinking-slider
          name: thinking-slider
    ```
-4. Verify <DSH_HOME>\profiles\node_modules\thinking-slider\package.json exists, its
-   exports["./client"] points to lib/client.js, and both lib/client.js and lib/index.js are
-   present.
-5. Do NOT try to restart the host DSH process yourself (it would interrupt this session).
-   When done, remind me to restart DSH; after the restart I will open the model picker →
-   "Thinking strength" in the web UI to verify the slider appears.
+4. 校验 <DSH_HOME>\profiles\node_modules\thinking-slider\package.json 存在，
+   且其 exports["./client"] 指向 lib/client.js，lib/client.js 与 lib/index.js 均在。
+5. 不要尝试自行重启宿主 DSH 进程（会中断当前会话）。完成后提醒我重启 DSH 进程；
+   重启后我打开 Web 界面的模型选择器 →「思考强度」验证滑条是否出现。
 ````
 
-### Option B — manual install
+### 方式二：手动安装
 
-1. Clone this repository and put the `thinking-slider` directory into the DSH profile's node_modules (hoisted layout):
+1. 克隆本仓库，并把 `thinking-slider` 目录放入 DSH profile 的 node_modules（hoisted 布局）：
 
    ```bash
-   # assuming DSH_HOME=C:\Users\<you>\.dsh
+   # 假设 DSH_HOME=C:\Users\<you>\.dsh
    cd %DSH_HOME%\profiles\node_modules
    git clone https://github.com/Motuo24/dsh-thinking-slider.git thinking-slider
-   # or copy the thinking-slider directory here manually
+   # 或手动复制 thinking-slider 目录到这里
    ```
 
-2. Insert the plugin row into the DSH profile's composition patch:
+2. 在 DSH profile 的组合 patch 中插入插件行：
 
    ```yaml
    # %DSH_HOME%\profiles\web\cordis.patch.yml
@@ -144,75 +138,75 @@ Install steps:
          name: thinking-slider
    ```
 
-3. Restart the DSH process (`client-modules` scans `dsh.client` declarations at startup and composes the plugin into the browser boot graph). Open the web UI, go to the model picker → "Thinking strength" to see the slider.
+3. 重启 DSH 进程（`client-modules` 在启动时扫描 `dsh.client` 声明，把插件编入浏览器启动图）。打开 Web 界面，进入模型选择器 →「思考强度」即可看到滑条。
 
-## 🔄 Update
+## 🔄 更新
 
 ```bash
 cd %DSH_HOME%\profiles\node_modules\thinking-slider
 git pull
 ```
 
-Then restart DSH. Client bundles are read once at startup, so a restart (or a browser hard refresh after a host-side rebuild) is required to pick up the new `client.js`.
+然后重启 DSH。`client-modules` 只在启动时读取一次 bundle，所以需要重启（或 host 半重建后硬刷新浏览器）才能加载新的 `client.js`。
 
-## ❓ FAQ
+## ❓ 常见问题
 
-| Symptom | Cause & fix |
+| 现象 | 原因与解决 |
 |---|---|
-| Plugin list in Settings doesn't show it | This is a **client-side** plugin (no host behavior); the Settings plugin page may only list host rows. Verify by the UI itself: open the model picker → "Thinking strength" should show the slider. |
-| Slider still shows the old button list after install | `client-modules` scans `dsh.client` declarations **at startup**. Restart DSH (and hard-refresh the browser with Ctrl/Cmd+Shift+R). |
-| Too many levels with a custom model | The plugin **auto-hides the Default placeholder** when a model exposes 5+ concrete levels. If you still find it crowded, open an issue. |
-| Two sliders / duplicate behavior | You likely have the plugin row twice in `cordis.patch.yml`, or both a git clone and another install path. Remove the duplicate row. |
-| Original button list comes back after DSH restart | The plugin package isn't in the profile's `node_modules` or the composition row is missing. Re-check the two install steps. |
+| 设置页插件列表里看不到它 | 这是**纯客户端插件**（无 host 行为），设置页插件列表可能只列出 host 行。以界面本身为准：打开模型选择器 →「思考强度」应显示滑条。 |
+| 装完还是原来的按钮列表 | `client-modules` 在**启动时**扫描 `dsh.client` 声明。重启 DSH，并硬刷新浏览器（Ctrl/Cmd+Shift+R）。 |
+| 自定义模型档位太多 | 插件会在模型暴露 5 个以上具体档位时**自动隐藏 Default 占位项**。若仍觉得拥挤，欢迎提 issue。 |
+| 出现两个滑条 / 行为重复 | 大概率 `cordis.patch.yml` 里插件行写了两遍，或同时存在 git clone 与其他安装路径。删掉重复行即可。 |
+| 重启 DSH 后恢复原版按钮列表 | 插件包不在 profile 的 `node_modules`，或组合行缺失。重新检查安装的两步。 |
 
-## 🧩 Compatibility
+## 🧩 兼容性
 
-| Component | Requirement |
+| 组件 | 要求 |
 |---|---|
-| DSH | Web surface (`dsh --profile web`), `@deepseek-ai/dsh-web-app` mounted |
-| Dependencies | `@deepseek-ai/dsh-client-ui-model-selection` mounted (provides the model directory service) |
-| Node.js | ≥ 20 (same as DSH itself) |
-| Browser | Any browser DSH web supports (Chromium/Edge recommended) |
+| DSH | Web 界面（`dsh --profile web`），已挂载 `@deepseek-ai/dsh-web-app` |
+| 依赖 | 已挂载 `@deepseek-ai/dsh-client-ui-model-selection`（提供模型目录服务） |
+| Node.js | ≥ 20（与 DSH 本身一致） |
+| 浏览器 | DSH Web 支持的任意浏览器（推荐 Chromium/Edge） |
 
-## 🛠️ Development
+## 🛠️ 开发与构建
 
 ```bash
 git clone https://github.com/Motuo24/dsh-thinking-slider.git
 cd dsh-thinking-slider
 ```
 
-There is no build step — `lib/client.js` is plain JavaScript (the `window.__ModuleLoader__.load` format DSH ships to the browser) and `lib/index.js` is the empty host half. Edit, then install your local copy into the profile (`<DSH_HOME>\profiles\node_modules\thinking-slider`) and restart DSH.
+没有构建步骤——`lib/client.js` 是纯 JavaScript（DSH 发给浏览器的 `window.__ModuleLoader__.load` 格式），`lib/index.js` 是空的 host 半。改完把自己的副本装进 profile（`<DSH_HOME>\profiles\node_modules\thinking-slider`），重启 DSH 即可。
 
-Project structure:
+项目结构：
 
 ```
 thinking-slider/
-├── package.json       # dsh.client declaration (platform: web) + exports["./client"]
+├── package.json       # dsh.client 声明（platform: web）+ exports["./client"]
 └── lib/
-    ├── index.js       # host half: empty apply, just so the Loader recognizes the row
-    └── client.js      # browser half: full UI in window.__ModuleLoader__.load format
+    ├── index.js       # host 半：空 apply，仅让 Loader 识别该行
+    └── client.js      # 浏览器半：window.__ModuleLoader__.load 格式的完整 UI
 ```
 
-## 📋 Changelog
+## 📋 更新日志
 
-- **0.1.0** — initial release: slider replaces the effort button list, snap-to-step + settle animation, zh/en bilingual copy, screenshots, agent-assisted install prompt, auto-hide Default for 5+ levels.
+- **0.1.0** — 初始发布：滑条替换思考强度按钮列表、档位吸附 + 落档动画、中英文双语文案、效果图、Agent 自动安装提示词、5+ 档位自动隐藏 Default。
 
-## ⚠️ Known limitations
+## ⚠️ 已知限制
 
-- **Client-only plugin**: no host-side behavior; it cannot do anything outside the browser surface.
-- **Requires a restart** to load a new bundle (`client-modules` reads bundle content at startup).
-- **Slider levels mirror the model's advertised catalog**: the slider only shows what the adapter reports; it does not invent levels.
-- **Shadow registration**: if the original seat (`@deepseek-ai/dsh-client-ui-model-selection`) is removed from the deployment, this plugin has nothing to shadow and renders nothing.
+- **纯客户端插件**：无 host 半行为，只能在浏览器界面内工作。
+- **需要重启生效**：`client-modules` 在启动时读取 bundle 内容，新版本要重启才能加载。
+- **档位与模型目录一致**：滑条只展示适配器上报的档位，不会凭空创造档位。
+- **依赖原版席位**：若部署中移除了 `@deepseek-ai/dsh-client-ui-model-selection`，本插件没有可影子的目标，将不渲染任何内容。
 
-## 🤝 Contributing
+## 🤝 参与贡献
 
-Issues and pull requests are welcome! This is a small project — bug reports, screenshot updates, locale fixes, and polish PRs are all appreciated.
+欢迎提 issue 和 PR！这是个小型项目——bug 报告、效果图更新、文案修正、打磨类 PR 都非常欢迎。
 
-1. Fork the repo and create a feature branch
-2. Make your change in `lib/client.js` (no build step)
-3. Test locally by installing the copy into your DSH profile and restarting
-4. Open a PR with a short description and, if UI-related, a screenshot
+1. Fork 本仓库并创建功能分支
+2. 在 `lib/client.js` 里修改（无构建步骤）
+3. 本地安装到你的 DSH profile 并重启验证
+4. 提交 PR，附上简短说明；涉及 UI 的改动请附带截图
 
-## 📄 License
+## 📄 许可
 
 [MIT](./LICENSE)
