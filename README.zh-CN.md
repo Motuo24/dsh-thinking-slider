@@ -53,9 +53,8 @@
 1. 确认环境：
    - 读取 DSH_HOME（环境变量 DSH_HOME，缺省 ~/.dsh 或 %USERPROFILE%\.dsh），确认
      <DSH_HOME>\profiles\web\cordis.patch.yml 与 <DSH_HOME>\profiles\node_modules 存在。
-   - 若 git 访问 GitHub 失败（如 Connection was reset），先为本机配置 git 代理再继续，
-     例如 git config --global http.proxy http://127.0.0.1:7897 与 https.proxy 同理
-     （端口以本机实际代理软件为准）。
+   - 若 git 访问 GitHub 失败（如 Connection was reset），由你自行寻找可用的镜像地址或
+     其他方式获取源码，不要假定本机存在本地代理。
 2. 获取插件源码：优先把仓库克隆到当前工作区（我允许写入的目录），随后将整个
    thinking-slider 目录复制到 <DSH_HOME>\profiles\node_modules\thinking-slider；
    也可以直接克隆到目标位置（克隆后删除其中的 .git 目录）。若目标目录已存在，用最新代码覆盖。

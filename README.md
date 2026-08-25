@@ -54,9 +54,8 @@ Install steps:
 1. Inspect the environment:
    - Read DSH_HOME (env var DSH_HOME, default ~/.dsh or %USERPROFILE%\.dsh) and confirm
      <DSH_HOME>\profiles\web\cordis.patch.yml and <DSH_HOME>\profiles\node_modules exist.
-   - If git cannot reach GitHub (e.g. "Connection was reset"), configure a local git proxy
-     first, e.g. `git config --global http.proxy http://127.0.0.1:7897` and the same for
-     https.proxy (use the port of the actual local proxy software).
+   - If git cannot reach GitHub (e.g. "Connection was reset"), find a usable mirror or
+     another way to obtain the source yourself; do not assume a local proxy exists.
 2. Obtain the source: prefer cloning the repo into my current workspace (a directory I allow
    you to write), then copy the whole thinking-slider directory to
    <DSH_HOME>\profiles\node_modules\thinking-slider; cloning directly to the target also
