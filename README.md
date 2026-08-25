@@ -60,9 +60,9 @@ It is not a standalone app — it is a lightweight DSH client plugin of 3 files 
 
 ## 🖼️ Screenshots
 
-### More reasoning levels — MiniMax M2.7
+### More reasoning levels with third-party providers — e.g. MiniMax M2.7
 
-When DSH is connected to MiniMax M2.7, the plugin adapts to the model's exposed reasoning catalog and expands to more thinking-strength levels, keeping them on a single snap-to-step slider.
+When DSH is connected to a third-party provider such as MiniMax M2.7, the provider exposes a richer reasoning catalog and the plugin adapts automatically, expanding the slider to all the extra thinking-strength levels the model offers — on the same snap-to-step control.
 
 ![MiniMax M2.7 — more thinking-strength levels](docs/images/minimax-m27-more-levels-v2.png)
 
