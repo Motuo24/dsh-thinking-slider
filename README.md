@@ -43,7 +43,7 @@ The data flow reuses the original per-session `ModelDirectory` (the `modelDirect
 
 When DSH is connected to MiniMax M2.7, the plugin adapts to the model's exposed reasoning catalog and expands to more thinking-strength levels, keeping them on a single snap-to-step slider.
 
-![MiniMax M2.7 — more thinking-strength levels](docs/images/minimax-m27-more-levels.png)
+![MiniMax M2.7 — more thinking-strength levels](docs/images/minimax-m27-more-levels-v2.png)
 
 ### Layered on DeepSeek
 

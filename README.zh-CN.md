@@ -43,7 +43,7 @@
 
 DSH 接入 MiniMax M2.7 时，插件会适配模型暴露的推理档位目录，扩展到更多的思考强度等级，并统一落在一条带档位吸附的滑条上。
 
-![MiniMax M2.7 —— 更多思考强度档位](docs/images/minimax-m27-more-levels.png)
+![MiniMax M2.7 —— 更多思考强度档位](docs/images/minimax-m27-more-levels-v2.png)
 
 ### 叠加到 DeepSeek
 
