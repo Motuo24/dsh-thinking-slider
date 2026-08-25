@@ -49,7 +49,7 @@ When DSH is connected to MiniMax M2.7, the plugin adapts to the model's exposed 
 
 The same slider layered on a DeepSeek model, snapping cleanly between `Off` / `Low` / `High` / `Max`.
 
-![DeepSeek — thinking-strength slider](docs/images/deepseek-overlay.jpg)
+![DeepSeek — thinking-strength slider](docs/images/deepseek-overlay.png)
 
 ## Install
 

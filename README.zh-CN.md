@@ -49,7 +49,7 @@ DSH 接入 MiniMax M2.7 时，插件会适配模型暴露的推理档位目录�
 
 同一条滑条叠加在 DeepSeek 模型上，在 `Off` / `Low` / `High` / `Max` 之间干净吸附。
 
-![DeepSeek —— 思考强度滑条](docs/images/deepseek-overlay.jpg)
+![DeepSeek —— 思考强度滑条](docs/images/deepseek-overlay.png)
 
 ## 安装
 
