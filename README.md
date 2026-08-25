@@ -2,9 +2,39 @@
 
 [English](./README.md) | [中文](./README.zh-CN.md)
 
-**Thinking-strength slider** — a client plugin for the DSH web UI that replaces the discrete button list for "thinking strength" (reasoning effort) in the model picker with a snap-to-step slider.
+<div align="center">
 
-## Introduction
+**A snap-to-step slider for the "thinking strength" (reasoning effort) control in the DSH web UI.**
+
+<br/>
+
+<a href="https://github.com/Motuo24/dsh-thinking-slider/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/Motuo24/dsh-thinking-slider" /></a>
+<a href="https://github.com/Motuo24/dsh-thinking-slider/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/Motuo24/dsh-thinking-slider" /></a>
+<a href="https://github.com/Motuo24/dsh-thinking-slider"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Motuo24/dsh-thinking-slider" /></a>
+<a href="https://github.com/Motuo24/dsh-thinking-slider"><img alt="Repo size" src="https://img.shields.io/github/repo-size/Motuo24/dsh-thinking-slider" /></a>
+<a href="https://github.com/topics/dsh-plugin"><img alt="DSH plugin" src="https://img.shields.io/badge/插件生态-topic%20dsh--plugin-4d6bfe" /></a>
+
+**Turn the model picker's discrete effort buttons into a smooth, springy slider.**
+
+</div>
+
+## 📑 Table of Contents
+
+- [✨ Introduction](#-introduction)
+- [🎯 Features](#-features)
+- [🖼️ Screenshots](#️-screenshots)
+- [🔧 How it works](#-how-it-works)
+- [🚀 Installation](#-installation)
+- [🔄 Update](#-update)
+- [❓ FAQ](#-faq)
+- [🧩 Compatibility](#-compatibility)
+- [🛠️ Development](#️-development)
+- [📋 Changelog](#-changelog)
+- [⚠️ Known limitations](#️-known-limitations)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+
+## ✨ Introduction
 
 When using the DSH web UI, adjusting how "deeply" a model thinks — its thinking strength (reasoning effort) — hides behind a second-level menu in the model picker as a row of discrete buttons: `Default` / `Off` / `High` / `Max`. Clicking is straightforward, but for a concept that is inherently a continuous gradient, a button list is neither intuitive nor pleasant to operate.
 
@@ -17,27 +47,18 @@ When using the DSH web UI, adjusting how "deeply" a model thinks — its thinkin
 
 It is not a standalone app — it is a lightweight DSH client plugin of 3 files and a few hundred lines: the host half merely marks the Loader row, while the browser half carries the entire UI and interaction, wired into DSH's plugin system through the `dsh.client` declaration and auto-loaded at process start.
 
-## Features
+## 🎯 Features
 
 - **Slider-based thinking strength** — open the model picker → "Thinking strength" and pick between `Default` / `Off` / `High` / `Max` (whatever levels the model actually provides)
 - **Snap-to-step** — drag continuously; on release the thumb snaps to the nearest step center with a springy settle animation
+- **Auto-hides redundant Default** — when a model exposes 5+ concrete reasoning levels, the "Default" placeholder is dropped so the slider stays uncluttered
 - **Visual feedback** — capsule track, blue progress fill, middle-level dots (first/last hidden under the thumb), white round thumb
 - **Explanatory copy** — under the title: "Higher strength produces more detailed reasoning but costs more time and resources"
 - **Bilingual** — copy follows the DSH UI language
 - **Commits immediately** — the snapped level is submitted via `session.selectModel`; the host is the single source of truth
 - **Keeps original behavior** — model list switching, Default level, error retry, and session lock state match the original
 
-## How it works
-
-The plugin shadows the `conversation.input.model` seat via **shadow registration** (priority `-1` < original `0`; the lowest renders):
-
-- The original (`@deepseek-ai/dsh-client-ui-model-selection`) registers at priority `0` and renders the two-level "Model / Reasoning effort" menu
-- This plugin registers at priority `-1` and renders the two-level "Model / Thinking strength" menu, whose strength panel is a slider
-- Stop or remove the plugin and the original button-list UI returns immediately
-
-The data flow reuses the original per-session `ModelDirectory` (the `modelDirectories` service): load the model catalog → subscribe to `directory.store` → commit via `directory.select({provider, model, reasoningEffort})`.
-
-## Screenshots
+## 🖼️ Screenshots
 
 ### More reasoning levels — MiniMax M2.7
 
@@ -51,7 +72,17 @@ The same slider layered on a DeepSeek model, snapping cleanly between `Off` / `L
 
 ![DeepSeek — thinking-strength slider](docs/images/deepseek-overlay.png)
 
-## Install
+## 🔧 How it works
+
+The plugin shadows the `conversation.input.model` seat via **shadow registration** (priority `-1` < original `0`; the lowest renders):
+
+- The original (`@deepseek-ai/dsh-client-ui-model-selection`) registers at priority `0` and renders the two-level "Model / Reasoning effort" menu
+- This plugin registers at priority `-1` and renders the two-level "Model / Thinking strength" menu, whose strength panel is a slider
+- Stop or remove the plugin and the original button-list UI returns immediately
+
+The data flow reuses the original per-session `ModelDirectory` (the `modelDirectories` service): load the model catalog → subscribe to `directory.store` → commit via `directory.select({provider, model, reasoningEffort})`.
+
+## 🚀 Installation
 
 > Requires the DSH web environment (`@deepseek-ai/dsh-web-app` and `dsh-client-ui-model-selection` mounted).
 
@@ -115,7 +146,44 @@ Install steps:
 
 3. Restart the DSH process (`client-modules` scans `dsh.client` declarations at startup and composes the plugin into the browser boot graph). Open the web UI, go to the model picker → "Thinking strength" to see the slider.
 
-## Project structure
+## 🔄 Update
+
+```bash
+cd %DSH_HOME%\profiles\node_modules\thinking-slider
+git pull
+```
+
+Then restart DSH. Client bundles are read once at startup, so a restart (or a browser hard refresh after a host-side rebuild) is required to pick up the new `client.js`.
+
+## ❓ FAQ
+
+| Symptom | Cause & fix |
+|---|---|
+| Plugin list in Settings doesn't show it | This is a **client-side** plugin (no host behavior); the Settings plugin page may only list host rows. Verify by the UI itself: open the model picker → "Thinking strength" should show the slider. |
+| Slider still shows the old button list after install | `client-modules` scans `dsh.client` declarations **at startup**. Restart DSH (and hard-refresh the browser with Ctrl/Cmd+Shift+R). |
+| Too many levels with a custom model | The plugin **auto-hides the Default placeholder** when a model exposes 5+ concrete levels. If you still find it crowded, open an issue. |
+| Two sliders / duplicate behavior | You likely have the plugin row twice in `cordis.patch.yml`, or both a git clone and another install path. Remove the duplicate row. |
+| Original button list comes back after DSH restart | The plugin package isn't in the profile's `node_modules` or the composition row is missing. Re-check the two install steps. |
+
+## 🧩 Compatibility
+
+| Component | Requirement |
+|---|---|
+| DSH | Web surface (`dsh --profile web`), `@deepseek-ai/dsh-web-app` mounted |
+| Dependencies | `@deepseek-ai/dsh-client-ui-model-selection` mounted (provides the model directory service) |
+| Node.js | ≥ 20 (same as DSH itself) |
+| Browser | Any browser DSH web supports (Chromium/Edge recommended) |
+
+## 🛠️ Development
+
+```bash
+git clone https://github.com/Motuo24/dsh-thinking-slider.git
+cd dsh-thinking-slider
+```
+
+There is no build step — `lib/client.js` is plain JavaScript (the `window.__ModuleLoader__.load` format DSH ships to the browser) and `lib/index.js` is the empty host half. Edit, then install your local copy into the profile (`<DSH_HOME>\profiles\node_modules\thinking-slider`) and restart DSH.
+
+Project structure:
 
 ```
 thinking-slider/
@@ -125,6 +193,26 @@ thinking-slider/
     └── client.js      # browser half: full UI in window.__ModuleLoader__.load format
 ```
 
-## License
+## 📋 Changelog
+
+- **0.1.0** — initial release: slider replaces the effort button list, snap-to-step + settle animation, zh/en bilingual copy, screenshots, agent-assisted install prompt, auto-hide Default for 5+ levels.
+
+## ⚠️ Known limitations
+
+- **Client-only plugin**: no host-side behavior; it cannot do anything outside the browser surface.
+- **Requires a restart** to load a new bundle (`client-modules` reads bundle content at startup).
+- **Slider levels mirror the model's advertised catalog**: the slider only shows what the adapter reports; it does not invent levels.
+- **Shadow registration**: if the original seat (`@deepseek-ai/dsh-client-ui-model-selection`) is removed from the deployment, this plugin has nothing to shadow and renders nothing.
+
+## 🤝 Contributing
+
+Issues and pull requests are welcome! This is a small project — bug reports, screenshot updates, locale fixes, and polish PRs are all appreciated.
+
+1. Fork the repo and create a feature branch
+2. Make your change in `lib/client.js` (no build step)
+3. Test locally by installing the copy into your DSH profile and restarting
+4. Open a PR with a short description and, if UI-related, a screenshot
+
+## 📄 License
 
 [MIT](./LICENSE)
