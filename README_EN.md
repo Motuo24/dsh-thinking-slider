@@ -195,6 +195,7 @@ thinking-slider/
 
 ## 📋 Changelog
 
+- **1.2.0** — Custom provider thinking-strength support: built-in fallback levels (low/medium/high/max/xhigh) when upstream adapters expose no reasoning catalog; full README overhaul (badges, TOC, FAQ, compatibility table, changelog, contributing); Chinese default README (English moved to README_EN.md); screenshot caption fixes; install prompt hardening (sandbox permissions, mirror fallback); new screenshots section.
 - **0.1.0** — initial release: slider replaces the effort button list, snap-to-step + settle animation, zh/en bilingual copy, screenshots, agent-assisted install prompt, auto-hide Default for 5+ levels.
 
 ## ⚠️ Known limitations

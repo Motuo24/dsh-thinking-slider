@@ -1,7 +1,7 @@
 {
   "name": "thinking-slider",
   "description": "Thinking-strength slider: replaces the composer model seat's reasoning-effort button list with a snap-to-step slider for the DSH web UI.",
-  "version": "0.1.0",
+  "version": "1.2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Motuo24/dsh-thinking-slider.git"
